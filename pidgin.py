@@ -4,10 +4,32 @@ without continual purple.Something calls"""
 import dbus
 
 PURPLE_CONV_TYPE_UNKNOWN = 0
-PURPLE_CONV_TYPE_IM = 1
-PURPLE_CONV_TYPE_CHAT = 2
-PURPLE_CONV_TYPE_MISC = 2
-PURPLE_CONV_TYPE_ANY = 2
+PURPLE_CONV_TYPE_IM      = 1
+PURPLE_CONV_TYPE_CHAT    = 2
+PURPLE_CONV_TYPE_MISC    = 3
+PURPLE_CONV_TYPE_ANY     = 4
+
+PURPLE_DISCONNECTED = 0
+PURPLE_CONNECTED    = 1
+PURPLE_CONNECTING   = 2
+
+PURPLE_CONNECTION_ERROR_NETWORK_ERROR             =  0
+PURPLE_CONNECTION_ERROR_INVALID_USERNAME          =  1
+PURPLE_CONNECTION_ERROR_AUTHENTICATION_FAILED     =  2
+PURPLE_CONNECTION_ERROR_AUTHENTICATION_IMPOSSIBLE =  3
+PURPLE_CONNECTION_ERROR_NO_SSL_SUPPORT            =  4
+PURPLE_CONNECTION_ERROR_ENCRYPTION_ERROR          =  5
+PURPLE_CONNECTION_ERROR_NAME_IN_USE               =  6
+PURPLE_CONNECTION_ERROR_INVALID_SETTINGS          =  7
+PURPLE_CONNECTION_ERROR_CERT_NOT_PROVIDED         =  8
+PURPLE_CONNECTION_ERROR_CERT_UNTRUSTED            =  9
+PURPLE_CONNECTION_ERROR_CERT_EXPIRED              = 10
+PURPLE_CONNECTION_ERROR_CERT_NOT_ACTIVATED        = 11
+PURPLE_CONNECTION_ERROR_CERT_HOSTNAME_MISMATCH    = 12
+PURPLE_CONNECTION_ERROR_CERT_FINGERPRINT_MISMATCH = 13
+PURPLE_CONNECTION_ERROR_CERT_SELF_SIGNED          = 14
+PURPLE_CONNECTION_ERROR_CERT_OTHER_ERROR          = 15
+PURPLE_CONNECTION_ERROR_OTHER_ERROR               = 16
 
 class Purple:
 	@staticmethod
@@ -194,6 +216,35 @@ class PurpleConnection:
 	def __init__(self, purple, connection):
 		self.purple = purple
 		self.connection = connection
+
+	def is_connected(self):
+		"Returns TRUE if the account is connected, otherwise returns FALSE."
+		return self.get_state() == PURPLE_CONNECTED
+
+	def destroy(self):
+		"Disconnects and destroys a PurpleConnection."
+		return self.purple.PurpleConnectionDestroy(self.connection)
+
+	def set_state(self, state):
+		"Sets the connection state."
+		"state is one of PURPLE_DISCONNECTED, PURPLE_CONNECTED, PURPLE_CONNECTING"
+		return self.purple.PurpleConnectionSetState(self.connection, state)
+
+	def get_state(self):
+		"Returns the connection state."
+		return self.purple.PurpleConnectionGetState(self.connection)
+
+	def get_account(self):
+		"Returns the connection's account."
+		return PurpleAccount(self.purple, self.purple.PurpleConnectionGetAccount(self.connection))
+
+	def get_password(self):
+		"Returns the connection's password."
+		return self.purple.PurpleConnectionGetPassword(self.connection)
+
+	def get_display_name(self):
+		"Returns the connection's displayed name."
+		return self.purple.PurpleConnectionGetDisplayName(self.connection)
 
 class PurpleConversation:
 	"A PurpleConversation is akin to an open chat window"
