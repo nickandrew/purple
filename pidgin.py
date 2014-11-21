@@ -45,6 +45,27 @@ class PurpleAccount:
 		"Disconnects from an account."
 		return self.purple.PurpleAccountDisconnect(self.account)
 
+	def notify_added(self, remote_user, _id, alias, message):
+		"Notifies the user that the account was added to a remote user's buddy list."
+		return self.purple.PurpleAccountNotifyAdded(self.account, remote_user, _id, alias, message)
+
+	def request_add(self, remote_user, _id, alias, message):
+		"""Notifies the user that the account was added to a remote user's buddy list and asks ther user if they want to
+		add the remote user to their buddy list."""
+		return self.purple.PurpleAccountRequestAdd(self.account, remote_user, _id, alias, message)
+
+	def request_close_with_account(self):
+		"Close account requests registered for the given PurpleAccount."
+		return self.purple.PurpleAccountRequestCloseWithAccount(self.account)
+
+	def request_change_password(self):
+		"Requests information from the user to change the account's password."
+		return self.purple.PurpleAccountRequestChangePassword(self.account)
+
+	def request_change_user_info(self):
+		"Requests information from the user to change the account's user information."
+		return self.purple.PurpleAccountRequestChangeUserInfo(self.account)
+
 	def set_username(self, username):
 		"Sets the account's username."
 		return self.purple.PurpleAccountSetUsername(self.account, username)
@@ -61,9 +82,65 @@ class PurpleAccount:
 		"Sets the account's user information."
 		return self.purple.PurpleAccountSetUserInfo(self.account, user_info)
 
+	def set_buddy_icon_path(self, path):
+		"Sets the account's buddy icon path."
+		return self.purple.PurpleAccountSetBuddyIconPath(self.account, path)
+
+	def set_protocol_id(self, protocol_id):
+		"Sets the account's protocol ID."
+		return self.purple.PurpleAccountSetProtocolId(self.account, protocol_id)
+
+	def set_remember_password(self, value):
+		"Sets whether or not this account should save its password."
+		return self.purple.PurpleAccountSetRememberPassword(self.account, value)
+
+	def set_check_mail(self, value):
+		"Sets whether or not this account should check for mail."
+		return self.purple.PurpleAccountSetCheckMail(self.account, value)
+
+	def set_enabled(self, ui, value):
+		"Sets whether or not this account is enabled for the specified UI."
+		return self.purple.PurpleAccountSetEnabled(self.account, ui, value)
+
+	def get_silence_suppression(self):
+		"Return whether silence suppression is used during voice call."
+		return self.purple.PurpleAccountGetSilenceSuppression(self.account)
+
+	def set_silence_suppression(self, value):
+		"Sets whether silence suppression is used during voice call."
+		return self.purple.PurpleAccountSetSilenceSuppression(self.account, value)
+
+	def clear_settings(self):
+		"Clears all protocol-specific settings on an account."
+		return self.purple.PurpleAccountClearSettings(self.account)
+
+	def remove_setting(self, name):
+		"Removes an account-specific setting by name."
+		return self.purple.PurpleAccountRemoveSetting(self.account, name)
+
+	def set_int(self, name, value):
+		"Sets a protocol-specific integer setting for an account."
+		return self.purple.PurpleAccountSetInt(self.account, name, value)
+
+	def set_string(self, name, value):
+		"Sets a protocol-specific string setting for an account."
+		return self.purple.PurpleAccountSetString(self.account, name, value)
+
+	def set_bool(self, name, value):
+		"Sets a protocol-specific boolean setting for an account."
+		return self.purple.PurpleAccountSetBool(self.account, name, value)
+
 	def is_connected(self):
 		"Returns whether or not the account is connected."
 		return self.purple.PurpleAccountIsConnected(self.account)
+
+	def is_connecting(self):
+		"Returns whether or not the account is connecting."
+		return self.purple.PurpleAccountIsConnecting(self.account)
+
+	def is_disconnected(self):
+		"Returns whether or not the account is disconnected."
+		return self.purple.PurpleAccountIsDisconnected(self.account)
 
 	def get_username(self):
 		"Returns the account's username."
@@ -81,6 +158,10 @@ class PurpleAccount:
 		"Returns the account's user information."
 		return self.purple.PurpleAccountGetUserInfo(self.account)
 
+	def get_buddy_icon_path(self):
+		"Returns the account's buddy icon path."
+		return self.purple.PurpleAccountGetBuddyIconPath(self.account)
+
 	def get_protocol_id(self):
 		"Returns the account's protocol ID."
 		return self.purple.PurpleAccountGetProtocolId(self.account)
@@ -88,6 +169,11 @@ class PurpleAccount:
 	def get_protocol_name(self):
 		"Returns the account's protocol name."
 		return self.purple.PurpleAccountGetProtocolName(self.account)
+
+	def get_connection(self):
+		"Returns the account's connection."
+		connection = self.purple.PurpleAccountGetConnection(self.account)
+		return PurpleConnection(self.purple, connection)
 
 class PurpleAccounts:
 	def __init__(self, purple):
@@ -107,7 +193,7 @@ class PurpleAccounts:
 class PurpleConnection:
 	def __init__(self, purple, connection):
 		self.purple = purple
-		self.account = account
+		self.connection = connection
 
 class PurpleConversation:
 	"A PurpleConversation is akin to an open chat window"
